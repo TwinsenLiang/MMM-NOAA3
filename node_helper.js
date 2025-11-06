@@ -41,7 +41,7 @@ module.exports = NodeHelper.create({
             this.getData();
             this.getSRSS();
             this.getAIR();
-            this.getMoonData();
+            // this.getMoonData();
             // if (this.providers[config.provider] == 'ds') {
             //     console.log(this.providers[config.provider]);
             //     this.getALERT()
