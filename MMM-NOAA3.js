@@ -426,7 +426,7 @@ Module.register("MMM-NOAA3", {
       <div class="divTableRow">
        <div class="divTableCell">${level}</div>                
          <!--空气质量指数值 -->
-         <div class="divTableCell">${(ev1 >= ev2 && ev1 <= ev3) ? UV : (this.moon ? '<img src="'+this.config.moon[this.moon]+'" height="16px" width="16px" style="vertical-align: text-bottom; position: relative; top: -1px;">' : 'No moon data')}</div>  <!-- 白天显示UV指数，夜晚显示月相图标 -->
+         <div class="divTableCell CellWithComment">${(ev1 >= ev2 && ev1 <= ev3) ? UV : (this.moon ? '<img src="'+this.config.moon[this.moon]+'" height="16px" width="16px" style="vertical-align: text-bottom; position: relative; top: -1px;"><span class="CellComment">' + this.translate(this.moon) + '</span>' : 'No moon data')}</div>  <!-- 白天显示UV指数，夜晚显示月相图标 -->
          <div class="divTableCell">${(this.config.lang != 'en') ? wind_kph : wind_mph}</div>      <!-- 非英语显示km/h，英语显示mph -->
       </div>
    </div>
