@@ -59,6 +59,7 @@
   "NETWORK_ERROR": "网络错误",
   "PERMISSION_ERROR": "权限错误",
   "UNKNOWN_ERROR": "未知错误",
+  "TEXT_PLACEHOLDER": "正在加载天气数据...",
   "WEATHER_SYMBOLS": {
     "01d": "☀️",
     "01n": "🌙",

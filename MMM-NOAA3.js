@@ -23,31 +23,6 @@ Module.register("MMM-NOAA3", {
 		userlat: "",
 		userlon: "",
 
-        langFile: {
-            "en": "en-US",
-            "de": "de-DE",
-            "sv": "sv-SE",
-            "es": "es-ES",
-            "fr": "fr-FR",
-            "zh_cn": "zh-CN",
-            "da": "da",
-            "nl": "nl-NL",
-            "nb": "nb-NO"
-        },
-
-        langTrans: {
-            "en": "EN",
-            "de": "DL",
-            "sv": "SW",
-            "es": "SP",
-            "fr": "FR",
-            "zh_cn": "CN",
-            "da": "DK",
-            "nl": "NL",
-            "nb": "NO",
-		    "gr": "el"
-			},
-
         levelTrans: {
             "1": "green",
             "2": "yellow",
@@ -136,30 +111,33 @@ Module.register("MMM-NOAA3", {
 		}
     },
 
+    // 加载翻译文件 - 根据MagicMirror配置自动选择对应语言
+    getTranslations: function() {
+        // 直接使用config.language作为键，映射到对应的翻译文件
+        var translations = {};
+        translations[config.language] = "translations/" + config.language + ".json";
+        return translations;
+    },
+
 	// 模块文本内容
     text: '',
 
-    // 自定义翻译函数，完全从config配置中获取翻译信息
+    // 翻译函数，直接使用MagicMirror的标准翻译机制
     customTranslate: function(key) {
-        // 如果config中有translations配置，并且包含当前键，则使用配置中的翻译
-        if (this.config.translations && this.config.translations[key]) {
-            return this.config.translations[key];
-        }
-        // 否则返回键本身（不再依赖翻译文件）
-        return key;
+        // 直接使用MagicMirror的标准翻译机制
+        // 这会自动从translations目录加载对应语言的翻译文件
+        return this.translate(key);
     },
 
     // 模块启动函数
     start: function() {
         Log.info("Starting module: " + this.name);  // 记录启动日志
-        this.text = this.translate("TEXT_PLACEHOLDER");  // 初始化文本内容
+        this.text = this.customTranslate("TEXT_PLACEHOLDER");  // 初始化文本内容
         this.sendSocketNotification('MMM-NOAA3', this.config);  // 发送配置到Node helper
         this.updateInterval = null;  // 初始化更新间隔变量
         
-        // 设置默认语言和单位（使用全局配置或模块配置）
-        this.config.lang = this.config.lang || config.language; // 自动覆盖并设置语言
+        // 设置默认单位（使用全局配置或模块配置）
         this.config.units = this.config.units || config.units;
-        var lang = this.config.langTrans[config.language];  // 获取当前语言设置
         
         // 初始化数据存储对象
         this.forecast = {};      // 预报数据
@@ -325,8 +303,8 @@ Module.register("MMM-NOAA3", {
         
         // 根据单位制式显示温度（公制或英制）
         var temper = config.units != "metric" ? 
-            Math.round(temp_f) + "&deg;<span class='tooltiptext'>" + this.customTranslate('Forecast') + ": " + fctext + "</span> " : 
-            Math.round(temp_c) + "&deg;<span class='tooltiptext'>" + this.customTranslate('Forecast') + ": " + fctext + "</span> ";
+            Math.round(temp_f) + "&deg;<span class='tooltiptext'>" + this.customTranslate('Forecast') + ": " + this.customTranslate(fctext) + "</span> " : 
+            Math.round(temp_c) + "&deg;<span class='tooltiptext'>" + this.customTranslate('Forecast') + ": " + this.customTranslate(fctext) + "</span> ";
             
         // 使用表格布局显示温度
         cur.innerHTML = `<div class="divTable">
@@ -428,11 +406,11 @@ Module.register("MMM-NOAA3", {
 		var lastDiv = document.createElement('div');
         var level = this.air.aqius;  // 空气质量指数值
       /* 空气质量等级注释（已注释掉的代码）
-      this.air.aqius  > 0 && this.air.aqius <= 50 ? this.air.aqius + "<span class='CellComment'>" + this.translate('Excellent') + "</span>": 
-      this.air.aqius > 50 && this.air.aqius <= 100 ? this.air.aqius + "<span class='CellComment'>" + this.translate('Good') + "</span>" :
-	  this.air.aqius > 100 && this.air.aqius <= 150 ? this.air.aqius + "<span class='CellComment'>" + this.translate('Lightly Polluted') + "</span>":
-	  this.air.aqius > 151 && this.air.aqius <= 200 ? this.air.aqius + "<span class='CellComment'>" + this.translate('Moderately Polluted') + "</span>":
-	  this.air.aqius > 201 && this.air.aqius <= 300 ? this.air.aqius + "<span class='CellComment'>" + this.translate('Heavily Polluted') + "</span>":
+      this.air.aqius  > 0 && this.air.aqius <= 50 ? this.air.aqius + "<span class='CellComment'>" + this.customTranslate('Excellent') + "</span>": 
+      this.air.aqius > 50 && this.air.aqius <= 100 ? this.air.aqius + "<span class='CellComment'>" + this.customTranslate('Good') + "</span>" :
+	  this.air.aqius > 100 && this.air.aqius <= 150 ? this.air.aqius + "<span class='CellComment'>" + this.customTranslate('Lightly Polluted') + "</span>":
+	  this.air.aqius > 151 && this.air.aqius <= 200 ? this.air.aqius + "<span class='CellComment'>" + this.customTranslate('Moderately Polluted') + "</span>":
+	  this.air.aqius > 201 && this.air.aqius <= 300 ? this.air.aqius + "<span class='CellComment'>" + this.customTranslate('Heavily Polluted') + "</span>":
 	  this.air.aqius + "<span class='CellComment'>Severely Polluted</span></div>";	*/	
 		lastDiv.innerHTML=
 		`<div class="divTable">
