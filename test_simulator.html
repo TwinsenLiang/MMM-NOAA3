@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAA3 测试模拟器</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .control-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .time-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .time-card h3 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        
+        .time-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #212529;
+        }
+        
+        .test-data-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .test-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .test-btn.active-test {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .test-btn.test-1 { background: linear-gradient(135deg, #ffd89b, #19547b); }
+        .test-btn.test-2 { background: linear-gradient(135deg, #a8caba, #5d4157); }
+        .test-btn.test-3 { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+        .test-btn.test-4 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        
+        .status-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .log-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #6c757d;
+            background: #f8f9fa;
+        }
+        
+        .log-entry.info { border-left-color: #17a2b8; background: #d1ecf1; }
+        .log-entry.success { border-left-color: #28a745; background: #d4edda; }
+        .log-entry.warning { border-left-color: #ffc107; background: #fff3cd; }
+        .log-entry.error { border-left-color: #dc3545; background: #f8d7da; }
+        
+        .api-response {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        input[type="datetime-local"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌤️ NOAA3 天气模块测试模拟器</h1>
+        <p>测试API调用、时间模拟和天气数据展示</p>
+    </div>
+    
+    <div class="control-panel">
+        <h2>⏰ 时间控制</h2>
+        <div class="time-display">
+            <div class="time-card">
+                <h3>当前真实时间</h3>
+                <div class="time-value" id="real-time">--:--:--</div>
+            </div>
+            <div class="time-card">
+                <h3>模拟时间</h3>
+                <div class="time-value" id="simulated-time-display">--:--:--</div>
+                <input type="datetime-local" id="simulated-time" style="margin-top: 10px; width: 100%;">
+                <button class="btn btn-primary" onclick="applySimulatedTime()" style="margin-top: 10px; width: 100%;">应用模拟时间</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-primary" onclick="simulateAPICall()">手动调用API</button>
+            <button class="btn btn-success" onclick="resetSystem()">重置系统</button>
+        </div>
+    </div>
+    
+    <div class="test-data-panel">
+        <h2>📊 测试数据选择</h2>
+        <div class="test-buttons">
+            <button class="test-btn test-1" onclick="setTestData(1)">数据1: 晴天 (00:00-06:00)</button>
+            <button class="test-btn test-2" onclick="setTestData(2)">数据2: 多云 (06:00-12:00)</button>
+            <button class="test-btn test-3" onclick="setTestData(3)">数据3: 雨天 (12:00-18:00)</button>
+            <button class="test-btn test-4" onclick="setTestData(4)">数据4: 雪天 (18:00-24:00)</button>
+        </div>
+        
+        <div class="status-panel">
+            <div class="status-item">
+                <strong>当前测试数据:</strong> <span id="current-test-data">未选择</span>
+            </div>
+            <div class="status-item">
+                <strong>API调用状态:</strong> <span id="api-status">等待调用</span>
+            </div>
+            <div class="status-item">
+                <strong>Cookie状态:</strong> <span id="cookie-status">未设置</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="log-panel">
+        <h2>📝 系统日志</h2>
+        <div id="log-container"></div>
+    </div>
+    
+    <div class="api-response">
+        <h2>🔍 API响应数据</h2>
+        <pre id="api-response-data">等待API调用...</pre>
+    </div>
+
+    <script>
+        // 全局变量
+        let simulatedTime = null;
+        let currentTestData = null;
+        let autoTimeAdvancement = null;
+        
+        // 测试数据映射
+        const testDataMap = {
+            1: { name: '晴天 (00:00-06:00)', file: 'test_data_1.json' },
+            2: { name: '多云 (06:00-12:00)', file: 'test_data_2.json' },
+            3: { name: '雨天 (12:00-18:00)', file: 'test_data_3.json' },
+            4: { name: '雪天 (18:00-24:00)', file: 'test_data_4.json' }
+        };
+        
+        // 初始化
+        function init() {
+            updateRealTime();
+            setInterval(updateRealTime, 1000);
+            
+            // 设置默认时间为当前时间
+            const now = new Date();
+            simulatedTime = new Date(now);
+            updateSimulatedTimeDisplay();
+            
+            // 设置datetime-local输入框的默认值
+            document.getElementById('simulated-time').value = formatDateTimeLocal(now);
+            
+            // 自动选择第一条测试数据
+            setTimeout(() => {
+                setTestData(1);
+            }, 100);
+            
+            // 启动时间自动推进（每5秒推进1小时）
+            startAutoTimeAdvancement();
+            
+            log('系统初始化完成', 'info');
+            updateStatus('已自动选择第一条测试数据');
+        }
+        
+        // 更新真实时间显示
+        function updateRealTime() {
+            const now = new Date();
+            document.getElementById('real-time').textContent = formatDateTime(now);
+        }
+        
+        // 更新模拟时间显示
+        function updateSimulatedTimeDisplay() {
+            if (simulatedTime) {
+                document.getElementById('simulated-time-display').textContent = formatDateTime(simulatedTime);
+            }
+        }
+        
+        // 格式化日期时间
+        function formatDateTime(date) {
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+        
+        // 格式化日期时间用于datetime-local输入
+        function formatDateTimeLocal(date) {
+            return date.getFullYear() + '-' + 
+                   String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(date.getDate()).padStart(2, '0') + 'T' + 
+                   String(date.getHours()).padStart(2, '0') + ':' + 
+                   String(date.getMinutes()).padStart(2, '0');
+        }
+        
+        // 设置测试数据
+        function setTestData(testId) {
+            currentTestData = testId;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.test-btn').forEach(btn => btn.classList.remove('active-test'));
+            document.getElementById(`test-btn-${testId}`).classList.add('active-test');
+            
+            // 更新状态显示
+            document.getElementById('current-test-data').textContent = testDataMap[testId].name;
+            
+            // 更新时间显示以反映当前时间段
+            updateTimeForTestData(testId);
+            
+            log(`选择了测试数据: ${testDataMap[testId].name} (ID: ${testId})`, 'info');
+            updateStatus(`已选择: ${testDataMap[testId].name} - 时间已同步`);
+            
+            // 立即加载一次数据
+            simulateAPICall();
+        }
+        
+        // 根据测试数据更新对应的时间
+        function updateTimeForTestData(testId) {
+            if (!simulatedTime) simulatedTime = new Date();
+            
+            // 根据测试数据ID设置不同的时间段
+            // 数据1: 00:00-06:00 (凌晨)
+            // 数据2: 06:00-12:00 (上午) 
+            // 数据3: 12:00-18:00 (下午)
+            // 数据4: 18:00-24:00 (晚上)
+            const baseTime = new Date(simulatedTime);
+            baseTime.setHours((testId - 1) * 6, 0, 0, 0);
+            
+            // 只更新时间部分，保持日期不变
+            simulatedTime.setHours(baseTime.getHours(), baseTime.getMinutes(), baseTime.getSeconds());
+            
+            updateSimulatedTimeDisplay();
+            document.getElementById('simulated-time').value = formatDateTimeLocal(simulatedTime);
+            
+            log(`时间已同步到 ${testDataMap[testId].name} 对应时间段: ${formatDateTime(simulatedTime)}`, 'info');
+        }
+        
+        // 启动时间自动推进
+        function startAutoTimeAdvancement() {
+            // 每5秒自动推进1小时
+            autoTimeAdvancement = setInterval(() => {
+                if (!simulatedTime) simulatedTime = new Date();
+                
+                // 推进1小时
+                simulatedTime.setHours(simulatedTime.getHours() + 1);
+                updateSimulatedTimeDisplay();
+                document.getElementById('simulated-time').value = formatDateTimeLocal(simulatedTime);
+                
+                // 检查是否需要切换到下一条测试数据
+                checkDataSwitchNeeded();
+                
+                // 检查是否需要API调用
+                checkAPICallNeeded();
+                
+                log(`时间自动推进1小时: ${formatDateTime(simulatedTime)}`, 'info');
+            }, 5000);
+        }
+        
+        // 检查是否需要切换到下一条测试数据
+        function checkDataSwitchNeeded() {
+            if (!simulatedTime) return;
+            
+            const currentHour = simulatedTime.getHours();
+            let expectedDataId = 1;
+            
+            // 根据时间段确定应该使用的测试数据
+            if (currentHour >= 0 && currentHour < 6) {
+                expectedDataId = 1; // 凌晨 - 晴天
+            } else if (currentHour >= 6 && currentHour < 12) {
+                expectedDataId = 2; // 上午 - 多云
+            } else if (currentHour >= 12 && currentHour < 18) {
+                expectedDataId = 3; // 下午 - 雨天
+            } else {
+                expectedDataId = 4; // 晚上 - 雪天
+            }
+            
+            // 如果当前数据与时间段不匹配，自动切换
+            if (currentTestData !== expectedDataId) {
+                log(`时间段变化，自动切换到 ${testDataMap[expectedDataId].name}`, 'success');
+                setTestData(expectedDataId);
+            }
+        }
+        
+        // 检查是否需要API调用
+        function checkAPICallNeeded() {
+            // 每小时只调用一次API（模拟Cookie机制）
+            const lastCall = getCookie('last_api_call');
+            if (lastCall) {
+                const lastCallTime = new Date(parseInt(lastCall));
+                const currentTime = new Date();
+                const hoursDiff = (currentTime - lastCallTime) / (1000 * 60 * 60);
+                
+                if (hoursDiff < 1) {
+                    return; // 不到1小时，不调用
+                }
+            }
+            
+            // 超过1小时，调用API
+            simulateAPICall();
+        }
+        
+        // 应用模拟时间
+        function applySimulatedTime() {
+            const timeInput = document.getElementById('simulated-time').value;
+            if (timeInput) {
+                simulatedTime = new Date(timeInput);
+                updateSimulatedTimeDisplay();
+                
+                // 检查是否需要切换测试数据
+                checkDataSwitchNeeded();
+                
+                log(`应用模拟时间: ${formatDateTime(simulatedTime)}`, 'success');
+            }
+        }
+        
+        // 模拟API调用
+        async function simulateAPICall() {
+            if (!currentTestData) {
+                log('请先选择测试数据', 'warning');
+                return;
+            }
+            
+            updateStatus('正在调用API...');
+            log('开始模拟API调用', 'info');
+            
+            try {
+                // 设置Cookie，记录最后一次调用时间
+                setCookie('last_api_call', Date.now().toString(), 1);
+                
+                // 调用测试服务器
+                const response = await fetch(`/modules/MMM-NOAA3/test_server.js?test=${currentTestData}&time=${simulatedTime.getTime()}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // 显示API响应数据
+                document.getElementById('api-response-data').textContent = JSON.stringify(data, null, 2);
+                
+                updateStatus('API调用成功');
+                log('API调用成功，数据已更新', 'success');
+                log(`拉取数据: ${data.current.weather[0].description}，温度: ${data.current.temp}°C`, 'info');
+                
+                // 更新Cookie状态显示
+                updateCookieStatus();
+                
+            } catch (error) {
+                updateStatus('API调用失败');
+                log(`API调用失败: ${error.message}`, 'error');
+                document.getElementById('api-response-data').textContent = `错误: ${error.message}`;
+            }
+        }
+        
+        // 重置系统
+        function resetSystem() {
+            simulatedTime = new Date();
+            updateSimulatedTimeDisplay();
+            document.getElementById('simulated-time').value = formatDateTimeLocal(simulatedTime);
+            
+            // 清除Cookie
+            deleteCookie('last_api_call');
+            updateCookieStatus();
+            
+            // 重新选择第一条数据
+            setTestData(1);
+            
+            log('系统已重置', 'success');
+            updateStatus('系统已重置');
+        }
+        
+        // Cookie操作函数
+        function setCookie(name, value, hours) {
+            const date = new Date();
+            date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+        }
+        
+        function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.trim().split('=');
+                if (cookieName === name) {
+                    return cookieValue;
+                }
+            }
+            return null;
+        }
+        
+        function deleteCookie(name) {
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        }
+        
+        // 更新Cookie状态显示
+        function updateCookieStatus() {
+            const lastCall = getCookie('last_api_call');
+            if (lastCall) {
+                const lastCallTime = new Date(parseInt(lastCall));
+                const status = `最后调用: ${formatDateTime(lastCallTime)}`;
+                document.getElementById('cookie-status').textContent = status;
+            } else {
+                document.getElementById('cookie-status').textContent = '未设置';
+            }
+        }
+        
+        // 日志函数
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        // 更新状态函数
+        function updateStatus(message) {
+            document.getElementById('api-status').textContent = message;
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

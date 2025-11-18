@@ -1,0 +1,170 @@
+/**
+ * NOAA3 天气模块 - 中文优化样式
+ * 针对中文显示进行优化，提供更好的用户体验
+ */
+
+.MMM-NOAA3 {
+  font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  color: #fff;
+}
+
+.MMM-NOAA3 .weather-container {
+  text-align: center;
+  padding: 10px;
+}
+
+.MMM-NOAA3 .current-weather {
+  margin-bottom: 20px;
+}
+
+.MMM-NOAA3 .temperature {
+  font-size: 3em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.MMM-NOAA3 .weather-description {
+  font-size: 1.2em;
+  margin: 5px 0;
+  color: #ccc;
+}
+
+.MMM-NOAA3 .weather-icon {
+  font-size: 4em;
+  margin: 10px 0;
+}
+
+.MMM-NOAA3 .weather-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.MMM-NOAA3 .detail-item {
+  text-align: left;
+  font-size: 0.9em;
+}
+
+.MMM-NOAA3 .detail-label {
+  color: #aaa;
+  font-size: 0.8em;
+}
+
+.MMM-NOAA3 .detail-value {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.MMM-NOAA3 .forecast-container {
+  margin-top: 20px;
+}
+
+.MMM-NOAA3 .forecast-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ddd;
+}
+
+.MMM-NOAA3 .forecast-items {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.MMM-NOAA3 .forecast-item {
+  text-align: center;
+  margin: 5px;
+  min-width: 80px;
+}
+
+.MMM-NOAA3 .forecast-day {
+  font-size: 0.9em;
+  color: #bbb;
+  margin-bottom: 5px;
+}
+
+.MMM-NOAA3 .forecast-icon {
+  font-size: 2em;
+  margin: 5px 0;
+}
+
+.MMM-NOAA3 .forecast-temp {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.MMM-NOAA3 .forecast-desc {
+  font-size: 0.8em;
+  color: #aaa;
+  margin-top: 3px;
+}
+
+.MMM-NOAA3 .location-info {
+  font-size: 0.9em;
+  color: #bbb;
+  margin-top: 10px;
+}
+
+.MMM-NOAA3 .update-time {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+  .MMM-NOAA3 .weather-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .MMM-NOAA3 .forecast-items {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .MMM-NOAA3 .forecast-item {
+    margin: 10px 0;
+  }
+}
+
+/* 中文特有的优化 */
+.MMM-NOAA3 .chinese-optimized {
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+
+.MMM-NOAA3 .weather-alert {
+  background-color: #ff4444;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 10px 0;
+  font-size: 0.9em;
+  animation: alert-pulse 2s infinite;
+}
+
+@keyframes alert-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* 测试模式样式 */
+.MMM-NOAA3.test-mode {
+  border: 2px solid #ff9800;
+  border-radius: 10px;
+}
+
+.MMM-NOAA3.test-mode::before {
+  content: "测试模式";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ff9800;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.7em;
+}

@@ -21,18 +21,25 @@
 
 **中文版与原版的差异：**
 
-1. **完整中文汉化**：
+1. **技术改进**
+- **API调用优化**: 支持OpenWeatherMap API v3.0
+- **缓存机制**: 每小时只调用一次API，避免API拉爆的情况。
+- **月相显示**: 原作者使用的是 http://api.farmsense.net/v1/moonphases 的API接口已经失效了。修改为获取OpenWeatherMap的多天数据来做切换为今天月相
+- **测试模式**: 内置测试假数据、服务器和模拟器
+
+2. **完整中文汉化**：
    - 所有界面元素、天气描述、空气质量等级等均已汉化
    - 支持完整的中文天气描述翻译（基于OpenWeatherMap API）
    - 风向、月相等专业术语均已本地化
 
-2. **关于月相的优化**：
-   - 原作者使用的是 http://api.farmsense.net/v1/moonphases 的API接口已经失效了
-   - 获取OpenWeatherMap的多天数据来做切换为今天月相
-
 3. **配置优化**：
    - 简化配置文件结构
    - 自动识别中文语言环境
+
+4. **测试功能** 
+- **测试服务器**: 内置模拟API服务器
+- **测试模拟器**: 可视化测试界面
+- **测试数据**: 提供多种天气场景测试
 
 ## 示例
 
@@ -199,6 +206,44 @@ https://github.com/LukeSkywalker92/MMM-DWD-WarnWeather
 
 这将为您提供纯白色的标题，或者选择您想要的任何颜色样式！ :) 像这样 ->  
 ![](examples/plain.png)
+
+## 🚀 使用测试功能
+
+### 1. 启动测试服务器
+```bash
+cd modules/MMM-NOAA3
+node test_server.js
+```
+
+### 2. 访问测试模拟器
+打开浏览器访问：
+```
+http://localhost:8080/modules/MMM-NOAA3/test_simulator.html
+```
+
+### 3. 测试模式配置
+在配置中启用测试模式：
+```javascript
+{
+    module: 'MMM-NOAA3',
+    config: {
+        testMode: true,
+        testServer: "http://localhost:3001"
+    }
+}
+```
+
+## 📊 测试数据说明
+
+测试服务器提供4种天气场景：
+
+| 测试ID | 天气类型 | 温度 | 描述 |
+|--------|----------|------|------|
+| 1 | 晴天 | 28°C | 适合测试晴天显示效果 |
+| 2 | 多云 | 25°C | 多云天气场景测试 |
+| 3 | 雨天 | 22°C | 雨天效果测试 |
+| 4 | 雪天 | 5°C | 雪天场景测试 |
+
 
 ## 启动您的魔镜...享受吧！
 

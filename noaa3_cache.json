@@ -1,0 +1,98 @@
+{
+  "timestamp": "2025-11-18T16:29:33.703Z",
+  "weatherData": {
+    "current": {
+      "weather": "Rain",
+      "weather_f": "light rain",
+      "temp_c": 14,
+      "temp_f": 14,
+      "icon": "rain",
+      "humidity": 56,
+      "pressure_mb": 1026,
+      "pressure_in": 30,
+      "UV": 0,
+      "wind_mph": 7.83,
+      "wind_kph": 7.83,
+      "visibility_mi": 6,
+      "visibility_km": 10000
+    },
+    "forecast": [
+      {
+        "date": {
+          "weekday_short": "Wed"
+        },
+        "high": {
+          "fahrenheit": 19,
+          "celsius": 19
+        },
+        "low": {
+          "fahrenheit": 14,
+          "celsius": 14
+        },
+        "desc": "broken clouds",
+        "icon": "overcast"
+      },
+      {
+        "date": {
+          "weekday_short": "Thu"
+        },
+        "high": {
+          "fahrenheit": 17,
+          "celsius": 17
+        },
+        "low": {
+          "fahrenheit": 16,
+          "celsius": 16
+        },
+        "desc": "overcast clouds",
+        "icon": "overcast"
+      },
+      {
+        "date": {
+          "weekday_short": "Fri"
+        },
+        "high": {
+          "fahrenheit": 21,
+          "celsius": 21
+        },
+        "low": {
+          "fahrenheit": 16,
+          "celsius": 16
+        },
+        "desc": "clear sky",
+        "icon": "clear"
+      },
+      {
+        "date": {
+          "weekday_short": "Sat"
+        },
+        "high": {
+          "fahrenheit": 21,
+          "celsius": 21
+        },
+        "low": {
+          "fahrenheit": 18,
+          "celsius": 18
+        },
+        "desc": "clear sky",
+        "icon": "clear"
+      }
+    ]
+  },
+  "srssData": {
+    "sunrise": "2025-11-17T22:35:49+00:00",
+    "sunset": "2025-11-18T09:39:00+00:00",
+    "day_length": 39791
+  },
+  "airData": {
+    "air": {
+      "ts": "2025-11-18T11:00:00.000Z",
+      "aqius": 62,
+      "mainus": "p2",
+      "aqicn": 27,
+      "maincn": "p1"
+    }
+  },
+  "moonData": "Waning Crescent",
+  "lastUpdateHour": 0
+}
