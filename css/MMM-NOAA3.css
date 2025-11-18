@@ -234,7 +234,7 @@ height: 250%;}
         font-weight: 700;
     }
  .MMM-NOAA3    .divTableCell, .divTableHead {
-        border: 1px solid rgba(44, 46, 46, 0.15);
+        /*border: 1px solid rgba(44, 46, 46, 0.15);*/
         display: table-cell;
         padding: 8px;
 		height: 3px;

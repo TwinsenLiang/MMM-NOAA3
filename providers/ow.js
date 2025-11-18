@@ -34,12 +34,17 @@ const provider = {
 
     fetchWeatherData: async function () {
         
-        const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${this.config.userlat}&lon=${this.config.userlon}&exclude=minutely&appid=${this.config.apiKey}&units=${this.config.units}&lang=en`;
+        const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${this.config.userlat}&lon=${this.config.userlon}&exclude=minutely&appid=${this.config.apiKey}&units=${this.config.units}&lang=${this.config.language}`;
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Weather API response was not ok');
             const data = await response.json();
-            return this.parseWeatherData(data);
+            
+            // 返回包含原始数据和解析后数据的对象
+            return {
+                raw: data,  // 原始数据，用于月相提取
+                parsed: this.parseWeatherData(data)  // 处理后的数据，用于前端显示
+            };
         } catch (error) {
             console.log("Weather Data Error:", error.message);
             return null;
